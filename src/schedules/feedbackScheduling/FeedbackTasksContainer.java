@@ -1,5 +1,6 @@
 package schedules.feedbackScheduling;
 
+import schedules.SchedulingTasksContainer;
 import tasks.Task;
 
 import java.util.ArrayList;
@@ -7,14 +8,23 @@ import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class FeedbackTasksContainer implements Iterable<BlockingQueue<Task>> {
+public class FeedbackTasksContainer implements SchedulingTasksContainer<BlockingQueue<Task>> {
 
     private final BlockingQueue<Task> firstPriorityQueue = new LinkedBlockingQueue<>();
     private final BlockingQueue<Task> secondPriorityQueue = new LinkedBlockingQueue<>();
     private final BlockingQueue<Task> thirdPriorityQueue = new LinkedBlockingQueue<>();
     private final BlockingQueue<Task> fourthPriorityQueue = new LinkedBlockingQueue<>();
-
     private final FeedbackIterator iterator = new FeedbackIterator(this);
+
+    @Override
+    public void addTask(Task task) throws InterruptedException {
+        firstPriorityQueue.put(task);
+    }
+
+    @Override
+    public boolean hasTasksAvailable() {
+        return false;
+    }
 
     public void promote() throws InterruptedException {
         BlockingQueue<Task> currentQueue = iterator.currentQueue();
@@ -39,7 +49,7 @@ public class FeedbackTasksContainer implements Iterable<BlockingQueue<Task>> {
         return iterator;
     }
 
-     class FeedbackIterator implements Iterator<BlockingQueue<Task>> {
+    class FeedbackIterator implements Iterator<BlockingQueue<Task>> {
         private final ArrayList<BlockingQueue<Task>> listOfQueues = new ArrayList<>(4);
         private int currentQueueIndex = -1;
 
