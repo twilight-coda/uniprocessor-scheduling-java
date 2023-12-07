@@ -1,9 +1,9 @@
 package iterators;
 
-import Threads.SchedulingThread;
+import Threads.Task;
 
 import java.util.Iterator;
 
-public interface ThreadsIterator extends Iterator<SchedulingThread> {
+public interface TaskIterator extends Iterator<Task> {
 
 }

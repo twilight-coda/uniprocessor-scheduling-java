@@ -1,6 +1,6 @@
 package Threads;
 
-public interface SchedulingTask extends Runnable {
+public interface Task extends Runnable {
     int getRemainingTime();
 
     void setRemainingTime(int duration);

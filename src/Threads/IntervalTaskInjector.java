@@ -1,34 +1,28 @@
 package Threads;
 
-import java.util.Random;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class TasksProducer {
-        private final BlockingQueue<Integer> outputQueue;
+public class IntervalTaskInjector implements Runnable {
+    private final BlockingQueue<Task> inputQueue;
+    private final List<Task> tasks;
 
-        private boolean running = true;
+    public IntervalTaskInjector(BlockingQueue<Task> inputQueue, List<Task> tasks) {
+        this.inputQueue = inputQueue;
+        this.tasks = tasks;
+    }
 
-        public TasksProducer(BlockingQueue<Integer> outputQueue) {
-            this.outputQueue = outputQueue;
-        }
-
-        public void run() {
-            try {
-                while (running) {
-                    int item = produce();
-                    outputQueue.put(item);
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+    public void run() {
+        try {
+            for (Task task : tasks) {
+                System.out.format("\nAdding task: %d - Duration: %d ms", task.getId(), task.getRemainingTime());
+                inputQueue.put(task);
+                 Thread.sleep(500); // add task to input queue at set intervals
             }
+            inputQueue.put(SimpleTaskFactory.createSentinelTask());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
+    }
 
-        public void stopProducer() {
-            this.running = false;
-        }
-
-        private int produce() {
-            // Produce an item...
-            return new Random().nextInt();
-        }
 }

@@ -1,29 +1,26 @@
 package runner;
 
-import Threads.SchedulingThread;
+import Threads.Task;
 
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-public class ThreadRunner {
-    private final Lock lock = new ReentrantLock();
-    private final Condition preemption = lock.newCondition();
+public class Runner {
     private int timeSlice;
-    private bool isTimeSliced;
+    private boolean isTimeSliced = false;
 
-    ThreadRunner() {}
-
-    ThreadRunner(int timeSlice) {
-        this.timeSlice = timeSlice;
+    public Runner() {
+        this.isTimeSliced = false;
     }
 
-    public void run(SchedulingThread thread) {
-        lock.lock();
+    public Runner(int timeSlice) {
+        this.timeSlice = timeSlice;
+        this.isTimeSliced = true;
+    }
+
+    public void runTask(Task task) {
         try {
-            while (true) {
-                Thread.sleep(timeSlice);
-            }
+            task.run();
+            int runningTime = isTimeSliced ? Math.min(task.getRemainingTime(), timeSlice) : task.getRemainingTime();
+            Thread.sleep(runningTime);
+            task.setRemainingTime(task.getRemainingTime() - runningTime);
         } catch (InterruptedException ignored) {}
     }
 }

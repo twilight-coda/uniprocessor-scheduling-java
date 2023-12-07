@@ -1,27 +1,32 @@
 package Threads;
 
-import runner.ThreadRunner;
+public class SimpleTask implements Task {
 
-public class SimpleThread implements SchedulingThread {
+    public int id;
+    public int duration;
 
-    private final ThreadRunner runner;
-
-    SimpleThread(ThreadRunner runner) {
-        this.runner = runner;
+    public SimpleTask(int id, int duration) {
+        this.id = id;
+        this.duration = duration;
     }
 
     @Override
     public void run() {
-        runner.run(this);
+        System.out.format("\nRunning task: %d - time: %d\n", id, duration);
     }
 
     @Override
     public int getRemainingTime() {
-        return 0;
+        return duration;
     }
 
     @Override
-    public String getName() {
-        return null;
+    public void setRemainingTime(int duration) {
+        this.duration = duration;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 }

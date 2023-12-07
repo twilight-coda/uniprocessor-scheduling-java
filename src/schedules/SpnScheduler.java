@@ -1,81 +1,56 @@
 package schedules;
 
-import Threads.SchedulingTask;
+import Threads.Task;
 import runner.Runner;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Lock;
 
-public class FCFSScheduler implements Runnable {
-    private final BlockingQueue<SchedulingTask> inputTaskQueue;
-    private final FCFSThreads fcfsTasks;
+public class SpnScheduler implements Runnable {
+    private final BlockingQueue<Task> inputTaskQueue;
+    private final SpnTasks spnTasks;
     private final Runner runner;
-    private final Lock lock = new ReentrantLock();
-    private final Condition taskAdded = lock.newCondition();
-    private boolean running = true;
+    private boolean allTasksScheduled = false;
 
-    public FCFSScheduler(BlockingQueue<SchedulingTask> inputTaskQueue) {
+    public SpnScheduler(BlockingQueue<Task> inputTaskQueue) {
         this.inputTaskQueue = inputTaskQueue;
         runner = new Runner();
-        fcfsTasks = new FCFSThreads();
-    }
-
-    public void addTask(SchedulingTask task) {
-        lock.lock();
-    }
-
-    public void runSchedule() {
-        while (true) {
-            lock.lock();
-            try {
-                while (!fcfsTasks.iterator().hasNext()) {
-                    if (!running) {
-                        return;
-                    }
-                    taskAdded.await();
-                }
-                if (fcfsTasks.iterator().hasNext()) {
-                    SchedulingTask task = fcfsTasks.iterator().next();
-                    runner.runTask(task);
-                }
-            } catch (InterruptedException ignored) {}
-            finally {
-                lock.unlock();
-            }
-        }
+        spnTasks = new SpnTasks();
+        new Thread(this::scheduleTasks).start();
     }
 
     @Override
     public void run() {
-        scheduleTasks();
+        runSchedule();
     }
 
     private void scheduleTasks() {
         try {
-            while (running) {
-                SchedulingTask task = inputTaskQueue.take();
-                lock.lock();
-                try {
-                    fcfsTasks.addTask(task);
-                    taskAdded.signal();
-                } finally {
-                    lock.unlock();
+            while (true) {
+                Task task = inputTaskQueue.take();
+                if (task.getId() == -1) {
+                    System.out.println("-----Stop scheduling-----");
+                    allTasksScheduled = true;
+                    return;
                 }
+                System.out.println("new task: " + task.getId());
+                spnTasks.addTask(task);
+                System.out.println("Scheduling task: " + task.getId());
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
 
-    public void stopSchedule() {
-        running = false;
-        lock.lock();
-        try {
-            taskAdded.signalAll();
-        } finally {
-            lock.unlock();
+    public void runSchedule() {
+        while (true) {
+            if (allTasksScheduled && !spnTasks.tasksAvailable()) {
+                System.out.println("Scheduler exhausted");
+                return;
+            }
+            for (Task task : spnTasks) {
+                System.out.println("received task");
+                runner.runTask(task);
+            }
         }
     }
 }

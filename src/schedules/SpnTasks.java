@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-public class SpnThreads implements Iterable<Task> {
+public class SpnTasks implements Iterable<Task> {
     private final BlockingQueue<Task> taskQueue = new PriorityBlockingQueue<>(
             10,
             Comparator.comparingInt(Task::getRemainingTime)
@@ -26,9 +26,9 @@ public class SpnThreads implements Iterable<Task> {
 
     class SpnIterator implements Iterator<Task> {
 
-        private final SpnThreads threads;
+        private final SpnTasks threads;
 
-        public SpnIterator(SpnThreads threads) {
+        public SpnIterator(SpnTasks threads) {
             this.threads = threads;
         }
 
