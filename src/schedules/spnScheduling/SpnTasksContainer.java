@@ -26,15 +26,15 @@ public class SpnTasksContainer implements Iterable<Task> {
 
     class SpnIterator implements Iterator<Task> {
 
-        private final SpnTasksContainer threads;
+        private final SpnTasksContainer tasks;
 
-        public SpnIterator(SpnTasksContainer threads) {
-            this.threads = threads;
+        public SpnIterator(SpnTasksContainer tasks) {
+            this.tasks = tasks;
         }
 
         @Override
         public boolean hasNext() {
-            return !this.threads.taskExecutionQueue.isEmpty();
+            return !this.tasks.taskExecutionQueue.isEmpty();
         }
 
         @Override
