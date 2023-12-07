@@ -1,20 +1,20 @@
-package schedules;
+package schedules.spnScheduling;
 
-import Threads.Task;
+import tasks.Task;
 import runner.Runner;
 
 import java.util.concurrent.BlockingQueue;
 
 public class SpnScheduler implements Runnable {
-    private final BlockingQueue<Task> inputTaskQueue;
-    private final SpnTasks spnTasks;
+    private final BlockingQueue<Task> taskArrivalQueue;
+    private final SpnTasksContainer spnTasksContainer;
     private final Runner runner;
     private boolean allTasksScheduled = false;
 
-    public SpnScheduler(BlockingQueue<Task> inputTaskQueue) {
-        this.inputTaskQueue = inputTaskQueue;
+    public SpnScheduler(BlockingQueue<Task> taskArrivalQueue) {
+        this.taskArrivalQueue = taskArrivalQueue;
         runner = new Runner();
-        spnTasks = new SpnTasks();
+        spnTasksContainer = new SpnTasksContainer();
         new Thread(this::scheduleTasks).start();
     }
 
@@ -26,14 +26,14 @@ public class SpnScheduler implements Runnable {
     private void scheduleTasks() {
         try {
             while (true) {
-                Task task = inputTaskQueue.take();
+                Task task = taskArrivalQueue.take();
                 if (task.getId() == -1) {
                     System.out.println("-----Stop scheduling-----");
                     allTasksScheduled = true;
                     return;
                 }
                 System.out.println("new task: " + task.getId());
-                spnTasks.addTask(task);
+                spnTasksContainer.addTask(task);
                 System.out.println("Scheduling task: " + task.getId());
             }
         } catch (InterruptedException e) {
@@ -43,11 +43,11 @@ public class SpnScheduler implements Runnable {
 
     public void runSchedule() {
         while (true) {
-            if (allTasksScheduled && !spnTasks.tasksAvailable()) {
+            if (allTasksScheduled && !spnTasksContainer.tasksAvailable()) {
                 System.out.println("Scheduler exhausted");
                 return;
             }
-            for (Task task : spnTasks) {
+            for (Task task : spnTasksContainer) {
                 System.out.println("received task");
                 runner.runTask(task);
             }

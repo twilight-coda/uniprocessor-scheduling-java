@@ -1,6 +1,6 @@
 package runner;
 
-import Threads.Task;
+import tasks.Task;
 
 public class Runner {
     private int timeSlice;

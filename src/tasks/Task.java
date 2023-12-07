@@ -1,4 +1,4 @@
-package Threads;
+package tasks;
 
 public interface Task extends Runnable {
     int getRemainingTime();

@@ -1,4 +1,4 @@
-package Threads;
+package tasks;
 
 public class SimpleTask implements Task {
 
