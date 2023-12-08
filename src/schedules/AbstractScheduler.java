@@ -23,6 +23,7 @@ public abstract class AbstractScheduler<T> implements Runnable {
                     allTasksScheduled = true;
                     return;
                 }
+                task.setArrivalTime();
                 tasksContainer.addTask(task);
                 System.out.println("Scheduling task: " + task.getId());
             }

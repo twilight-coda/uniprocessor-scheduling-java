@@ -17,6 +17,7 @@ public class Runner {
 
     public void runTask(Task task) {
         try {
+            task.setStartTime();
             task.run();
             int runningTime = isTimeSliced ? Math.min(task.getRemainingTime(), timeSlice) : task.getRemainingTime();
             Thread.sleep(runningTime);
@@ -26,6 +27,7 @@ public class Runner {
 
     public void runTask(Task task, int timeSlice) {
         try {
+            task.setStartTime();
             task.run();
             int runningTime = Math.min(task.getRemainingTime(), timeSlice);
             Thread.sleep(runningTime);
