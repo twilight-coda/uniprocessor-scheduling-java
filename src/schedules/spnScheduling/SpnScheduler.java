@@ -31,6 +31,7 @@ public class SpnScheduler extends schedules.AbstractScheduler<Task> {
             for (Task task : spnTasksContainer) {
                 System.out.println("received task");
                 runner.runTask(task);
+                task.setFinishTime();
             }
         }
     }

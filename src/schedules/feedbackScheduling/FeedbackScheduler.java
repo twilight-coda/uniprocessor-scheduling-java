@@ -27,19 +27,26 @@ public class FeedbackScheduler extends AbstractScheduler<BlockingQueue<Task>> {
     public void runSchedule() {
         while (true) {
             if (allTasksScheduled && !feedbackTasksContainer.hasTasksAvailable()) {
-                System.out.println("Scheduler exhausted");
+                System.out.println("Scheduling complete");
                 return;
             }
             for (BlockingQueue<Task> queue : feedbackTasksContainer) {
+                System.out.println("Priority level " + feedbackTasksContainer.getQueuePriorityLevel(queue));
+                if (queue.isEmpty()) {
+                    System.out.println("Skipped - Queue empty");
+                }
                 for (Task task : queue) {
                     runner.runTask(task, getTimeSliceByPriority(feedbackTasksContainer.getQueuePriorityLevel(queue)));
                     Random random = new Random();
                     try {
                         if (task.getRemainingTime() == 0) {
                             feedbackTasksContainer.removeTask(queue, task);
+                            task.setFinishTime();
                         } else if (random.nextInt(6) == 5) { // Simulate task making an IO request and being promoted
+                            System.out.println("Task " + task.getId() + " promoted to higher priority");
                             feedbackTasksContainer.promote();
                         } else {
+                            System.out.println("Task " + task.getId() + " demoted to lower priority");
                             feedbackTasksContainer.demote();
                         }
                     } catch (InterruptedException ignored) {}
