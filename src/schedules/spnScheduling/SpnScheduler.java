@@ -1,16 +1,19 @@
 package schedules.spnScheduling;
 
+import runner.Runner;
 import tasks.Task;
 import java.util.concurrent.BlockingQueue;
 
-public class SpnScheduler extends schedules.AbstractScheduler {
+public class SpnScheduler extends schedules.AbstractScheduler<Task> {
 
     private final SpnTasksContainer spnTasksContainer;
+    protected final Runner runner;
 
     public SpnScheduler(BlockingQueue<Task> taskArrivalQueue) {
         super(taskArrivalQueue);
         spnTasksContainer = new SpnTasksContainer();
         new Thread(() -> transferTasksFromArrivalToExecutionQueue(spnTasksContainer)).start();
+        runner = new Runner();
     }
 
     @Override

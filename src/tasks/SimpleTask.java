@@ -12,7 +12,7 @@ public class SimpleTask implements Task {
 
     @Override
     public void run() {
-        System.out.format("\nRunning task: %d - time: %d\n", id, duration);
+        System.out.println("Running task: " + id + " - time: " + duration);
     }
 
     @Override

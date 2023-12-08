@@ -4,6 +4,7 @@ import schedules.SchedulingTasksContainer;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -23,7 +24,27 @@ public class FeedbackTasksContainer implements SchedulingTasksContainer<Blocking
 
     @Override
     public boolean hasTasksAvailable() {
-        return false;
+        return !firstPriorityQueue.isEmpty()
+                || !secondPriorityQueue.isEmpty()
+                || !thirdPriorityQueue.isEmpty()
+                || !fourthPriorityQueue.isEmpty();
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void removeTask(BlockingQueue<Task> queue, Task task) {
+        queue.remove(task);
+    }
+
+    public int getQueuePriorityLevel(BlockingQueue<Task> queue) {
+        if (queue.equals(firstPriorityQueue)) {
+            return 1;
+        } else if (queue.equals(secondPriorityQueue)) {
+            return 2;
+        } else if (queue.equals(thirdPriorityQueue)) {
+            return 3;
+        } else {
+            return 4;
+        }
     }
 
     public void promote() throws InterruptedException {
@@ -39,7 +60,7 @@ public class FeedbackTasksContainer implements SchedulingTasksContainer<Blocking
         BlockingQueue<Task> currentQueue = iterator.currentQueue();
         if (!currentQueue.equals(fourthPriorityQueue)) {
             Task task = currentQueue.take();
-            BlockingQueue<Task> lowerPriorityQueue = iterator.peekPreviousQueue();
+            BlockingQueue<Task> lowerPriorityQueue = iterator.peekNextQueue();
             lowerPriorityQueue.put(task);
         }
     }
@@ -49,6 +70,7 @@ public class FeedbackTasksContainer implements SchedulingTasksContainer<Blocking
         return iterator;
     }
 
+    @SuppressWarnings("InnerClassMayBeStatic")
     class FeedbackIterator implements Iterator<BlockingQueue<Task>> {
         private final ArrayList<BlockingQueue<Task>> listOfQueues = new ArrayList<>(4);
         private int currentQueueIndex = -1;
@@ -62,7 +84,7 @@ public class FeedbackTasksContainer implements SchedulingTasksContainer<Blocking
 
         @Override
         public boolean hasNext() {
-            return true;
+            return !listOfQueues.stream().allMatch(Collection::isEmpty);
         }
 
         @Override
