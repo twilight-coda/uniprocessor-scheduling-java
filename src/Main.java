@@ -11,8 +11,19 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Main {
     public static void main(String[] args) {
-        runSpnSchedule();
-        runFeedbackSchedule();
+        String selectedSchedule = args.length > 0 ? args[0] : "";
+        switch (selectedSchedule) {
+            case "1":
+                runSpnSchedule();
+                break;
+            case "2":
+                runFeedbackSchedule();
+                break;
+            default:
+                System.out.println("Running all schedules");
+                runSpnSchedule();
+                runFeedbackSchedule();
+        }
     }
 
     private static void runSpnSchedule() {
