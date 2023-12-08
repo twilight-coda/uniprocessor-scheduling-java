@@ -18,5 +18,30 @@ public class FCFSTasksContainer implements SchedulingTasksContainer<Task> {
     {
         return !TaskQueue.isEmpty();
     }
-    
+    @Override
+    public Iterator<Task> iterator()
+    {
+        return new FCFSIterator(this);
+    }
+
+    class FCFSIterator implements Iterator<Task>
+    {
+        private final FCFSTasksContainer tasks;
+
+        public FCFSIterator(FCFSTasksContainer tasks)
+        {
+            this.tasks = tasks;
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return !this.tasks.TaskQueue.isEmpty();
+        }
+        @Override
+        public Task next()
+        {
+            return TaskQueue.poll();
+        }
+    }
 }
