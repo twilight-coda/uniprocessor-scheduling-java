@@ -1,3 +1,4 @@
+import schedules.fcfsScheduling.FCFSScheduler;
 import schedules.feedbackScheduling.FeedbackScheduler;
 import tasks.IntervalTaskInjector;
 import tasks.Task;
