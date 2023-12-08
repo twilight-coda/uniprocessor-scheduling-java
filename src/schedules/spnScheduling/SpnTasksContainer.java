@@ -1,11 +1,12 @@
 package schedules.spnScheduling;
 
+import schedules.SchedulingTasksContainer;
 import tasks.Task;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-public class SpnTasksContainer implements Iterable<Task> {
+public class SpnTasksContainer implements SchedulingTasksContainer<Task> {
     private final BlockingQueue<Task> taskExecutionQueue = new PriorityBlockingQueue<>(
             10,
             Comparator.comparingInt(Task::getRemainingTime)
@@ -15,7 +16,7 @@ public class SpnTasksContainer implements Iterable<Task> {
         this.taskExecutionQueue.put(task);
     }
 
-    public boolean tasksAvailable() {
+    public boolean hasTasksAvailable() {
         return !taskExecutionQueue.isEmpty();
     }
 
@@ -26,15 +27,15 @@ public class SpnTasksContainer implements Iterable<Task> {
 
     class SpnIterator implements Iterator<Task> {
 
-        private final SpnTasksContainer threads;
+        private final SpnTasksContainer tasks;
 
-        public SpnIterator(SpnTasksContainer threads) {
-            this.threads = threads;
+        public SpnIterator(SpnTasksContainer tasks) {
+            this.tasks = tasks;
         }
 
         @Override
         public boolean hasNext() {
-            return !this.threads.taskExecutionQueue.isEmpty();
+            return !this.tasks.taskExecutionQueue.isEmpty();
         }
 
         @Override

@@ -1,21 +1,19 @@
 package schedules.spnScheduling;
 
-import tasks.Task;
 import runner.Runner;
-
+import tasks.Task;
 import java.util.concurrent.BlockingQueue;
 
-public class SpnScheduler implements Runnable {
-    private final BlockingQueue<Task> taskArrivalQueue;
+public class SpnScheduler extends schedules.AbstractScheduler<Task> {
+
     private final SpnTasksContainer spnTasksContainer;
-    private final Runner runner;
-    private boolean allTasksScheduled = false;
+    protected final Runner runner;
 
     public SpnScheduler(BlockingQueue<Task> taskArrivalQueue) {
-        this.taskArrivalQueue = taskArrivalQueue;
-        runner = new Runner();
+        super(taskArrivalQueue);
         spnTasksContainer = new SpnTasksContainer();
-        new Thread(this::scheduleTasks).start();
+        new Thread(() -> transferTasksFromArrivalToExecutionQueue(spnTasksContainer)).start();
+        runner = new Runner();
     }
 
     @Override
@@ -23,27 +21,10 @@ public class SpnScheduler implements Runnable {
         runSchedule();
     }
 
-    private void scheduleTasks() {
-        try {
-            while (true) {
-                Task task = taskArrivalQueue.take();
-                if (task.getId() == -1) {
-                    System.out.println("-----Stop scheduling-----");
-                    allTasksScheduled = true;
-                    return;
-                }
-                System.out.println("new task: " + task.getId());
-                spnTasksContainer.addTask(task);
-                System.out.println("Scheduling task: " + task.getId());
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
+    @Override
     public void runSchedule() {
         while (true) {
-            if (allTasksScheduled && !spnTasksContainer.tasksAvailable()) {
+            if (allTasksScheduled && !spnTasksContainer.hasTasksAvailable()) {
                 System.out.println("Scheduler exhausted");
                 return;
             }

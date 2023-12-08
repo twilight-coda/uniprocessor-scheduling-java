@@ -17,9 +17,9 @@ public class SimpleTaskFactory {
     }
 
     private static int generateRandomDuration() {
-        int[] shortTerm = {500, 1000}; // 500ms to 1000ms
-        int[] mediumTerm = {5000, 7000}; // 5s, 6s, 7s
-        int[] longTerm = {13000, 15000}; // 13s, 14s, 15s
+        int[] shortTerm = {300, 700}; // 300ms to 700ms
+        int[] mediumTerm = {5000, 7000}; // 5s to 7s
+        int[] longTerm = {13000, 15000}; // 13s to 15s
 
         // Randomly select a term
         return switch (random.nextInt(3)) {
