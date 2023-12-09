@@ -33,6 +33,7 @@ public class FCFSScheduler extends schedules.AbstractScheduler<Task> {
             {
                 System.out.println("Recieved Task");
                 runner.runTask(task);
+                task.setFinishTime();
             }
         }
     }

@@ -3,6 +3,8 @@ package schedules.hrrnScheduling;
 import schedules.SchedulingTasksContainer;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,6 +26,7 @@ public class HrrnTasksContainer implements  SchedulingTasksContainer<Task> {
         return new HrrnIterator(this);
     }
 
+    @SuppressWarnings("InnerClassMayBeStatic")
     class HrrnIterator implements Iterator<Task> {
 
         private final HrrnTasksContainer tasks;
@@ -44,10 +47,11 @@ public class HrrnTasksContainer implements  SchedulingTasksContainer<Task> {
     }
 
     private double calculateResponseRatio(Task task, long currentTime) {
-        long waitingTime = currentTime - task.getArrivalTime();
+        long waitingTime = Duration.between(task.getArrivalTime(), Instant.now()).toMillis();
         return (waitingTime + task.getRemainingTime()) / (double) task.getRemainingTime();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public Task getNextTask() {
         long currentTime = System.currentTimeMillis();
         Task nextTask = null;

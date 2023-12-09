@@ -33,6 +33,7 @@ public class HrrnScheduler extends AbstractScheduler<Task> {
             if (nextTask != null) {
                 System.out.println("Running HRRN scheduled task: " + nextTask.getId());
                 runner.runTask(nextTask);
+                nextTask.setFinishTime();
             }
         }
     }

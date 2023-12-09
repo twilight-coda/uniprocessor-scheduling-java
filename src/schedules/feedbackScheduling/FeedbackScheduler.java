@@ -38,6 +38,7 @@ public class FeedbackScheduler extends AbstractScheduler<BlockingQueue<Task>> {
                 for (Task task : queue) {
                     runner.runTask(task, getTimeSliceByPriority(feedbackTasksContainer.getQueuePriorityLevel(queue)));
                     Random random = new Random();
+                    task.getArrivalTime();
                     try {
                         if (task.getRemainingTime() == 0) {
                             feedbackTasksContainer.removeTask(queue, task);
