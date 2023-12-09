@@ -2,6 +2,7 @@ package schedules.rrScheduling;
 
 import schedules.SchedulingTasksContainer;
 import tasks.Task;
+
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -16,7 +17,8 @@ public class RRTasksContainer implements SchedulingTasksContainer<Task> {
     public boolean hasTasksAvailable() {
         return !taskExecutionQueue.isEmpty();
     }
-    public void removeTask(Task task){
+
+    public void removeTask(Task task) {
         this.taskExecutionQueue.remove(task);
     }
 
@@ -25,11 +27,11 @@ public class RRTasksContainer implements SchedulingTasksContainer<Task> {
         return new RRIterator(this);
     }
 
+    @SuppressWarnings("InnerClassMayBeStatic")
     class RRIterator implements Iterator<Task> {
 
         private final RRTasksContainer tasks;
-        
-        
+
 
         public RRIterator(RRTasksContainer tasks) {
             this.tasks = tasks;
@@ -41,14 +43,14 @@ public class RRTasksContainer implements SchedulingTasksContainer<Task> {
         }
 
         @Override
-        public Task next()  {
-          Task task=this.tasks.taskExecutionQueue.poll();
-          try {
-            this.tasks.taskExecutionQueue.put(task);
-          } catch (InterruptedException ignored) {
-            
-          }
-          return task;
+        public Task next() {
+            Task task = this.tasks.taskExecutionQueue.poll();
+            try {
+                if (task != null) {
+                    this.tasks.taskExecutionQueue.put(task);
+                }
+            } catch (InterruptedException ignored) {}
+            return task;
         }
     }
 

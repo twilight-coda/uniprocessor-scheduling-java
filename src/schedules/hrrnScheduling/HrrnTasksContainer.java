@@ -46,19 +46,18 @@ public class HrrnTasksContainer implements  SchedulingTasksContainer<Task> {
         }
     }
 
-    private double calculateResponseRatio(Task task, long currentTime) {
+    private double calculateResponseRatio(Task task) {
         long waitingTime = Duration.between(task.getArrivalTime(), Instant.now()).toMillis();
         return (waitingTime + task.getRemainingTime()) / (double) task.getRemainingTime();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public Task getNextTask() {
-        long currentTime = System.currentTimeMillis();
         Task nextTask = null;
         double highestResponseRatio = Double.MIN_VALUE;
 
         for (Task task : taskExecutionQueue) {
-            double responseRatio = calculateResponseRatio(task, currentTime);
+            double responseRatio = calculateResponseRatio(task);
             if (responseRatio > highestResponseRatio) {
                 highestResponseRatio = responseRatio;
                 nextTask = task;

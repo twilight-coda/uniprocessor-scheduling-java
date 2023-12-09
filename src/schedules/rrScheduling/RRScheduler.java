@@ -2,6 +2,7 @@ package schedules.rrScheduling;
 
 import runner.Runner;
 import tasks.Task;
+
 import java.util.concurrent.BlockingQueue;
 
 public class RRScheduler extends schedules.AbstractScheduler<Task> {
@@ -31,8 +32,7 @@ public class RRScheduler extends schedules.AbstractScheduler<Task> {
             for (Task task : rrTasksContainer) {
                 System.out.println("received task");
                 runner.runTask(task);
-                if(task.getRemainingTime()==0)
-                {
+                if (task.getRemainingTime() == 0) {
                     task.setFinishTime();
                     rrTasksContainer.removeTask(task);
                 }
