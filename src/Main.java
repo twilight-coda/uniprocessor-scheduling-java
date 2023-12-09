@@ -1,4 +1,6 @@
+import schedules.fcfsScheduling.FCFSScheduler;
 import schedules.feedbackScheduling.FeedbackScheduler;
+import schedules.hrrnScheduling.HrrnScheduler;
 import tasks.IntervalTaskInjector;
 import tasks.Task;
 import tasks.SimpleTaskFactory;
@@ -19,10 +21,18 @@ public class Main {
             case "2":
                 runFeedbackSchedule();
                 break;
+            case "3":
+                runHrrnSchedule();
+                break;
+            case "4":
+                runFcfsSchedule();
+                break;
             default:
                 System.out.println("Running all schedules");
                 runSpnSchedule();
                 runFeedbackSchedule();
+                runHrrnSchedule();
+                runFcfsSchedule();
         }
     }
 
@@ -45,6 +55,32 @@ public class Main {
 
         FeedbackScheduler feedbackScheduler = new FeedbackScheduler(preparedSchedulingItems.taskArrivalQueue);
         Thread scheduler = new Thread(feedbackScheduler);
+
+        runAlgorithm(scheduler, preparedSchedulingItems.producerThread);
+
+        summarize(preparedSchedulingItems.tasks);
+        System.out.println("-----------------END-----------------");
+    }
+
+    private static void runHrrnSchedule() {
+        System.out.println("-----------------HRRN Scheduling-----------------");
+        PreparedSchedulingItems preparedSchedulingItems = prepareSchedule();
+
+        HrrnScheduler hrrnScheduler = new HrrnScheduler(preparedSchedulingItems.taskArrivalQueue);
+        Thread scheduler = new Thread(hrrnScheduler);
+
+        runAlgorithm(scheduler, preparedSchedulingItems.producerThread);
+
+        summarize(preparedSchedulingItems.tasks);
+        System.out.println("-----------------END-----------------");
+    }
+
+    private static void runFcfsSchedule() {
+        System.out.println("-----------------FCFS Scheduling-----------------");
+        PreparedSchedulingItems preparedSchedulingItems = prepareSchedule();
+
+        FCFSScheduler fcfsScheduler = new FCFSScheduler(preparedSchedulingItems.taskArrivalQueue);
+        Thread scheduler = new Thread(fcfsScheduler);
 
         runAlgorithm(scheduler, preparedSchedulingItems.producerThread);
 

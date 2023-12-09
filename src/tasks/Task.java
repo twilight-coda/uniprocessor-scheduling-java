@@ -1,6 +1,7 @@
 package tasks;
 
 import java.time.Duration;
+import java.time.Instant;
 
 public interface Task {
     void run();
@@ -24,4 +25,6 @@ public interface Task {
     Duration getTurnAroundTime();
 
     Duration getWaitTime();
+
+    Instant getArrivalTime();
 }

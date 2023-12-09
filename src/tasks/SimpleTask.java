@@ -12,9 +12,12 @@ public class SimpleTask implements Task {
     private Instant startTime;
     private Instant finishTime;
 
+    private final Instant creationTime;
+
     public SimpleTask(int id, int duration) {
         this.id = id;
         this.totalTime = this.duration = duration;
+        this.creationTime = Instant.now();
     }
 
     @Override
@@ -85,5 +88,10 @@ public class SimpleTask implements Task {
                 totalTime,
                 getWaitTime().toMillis()
         );
+    }
+
+    @Override
+    public Instant getArrivalTime() {
+        return this.arrivalTime;
     }
 }
