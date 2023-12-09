@@ -6,6 +6,7 @@ import tasks.Task;
 import tasks.SimpleTaskFactory;
 import schedules.spnScheduling.SpnScheduler;
 import util.PerfCalculator;
+import schedules.rrScheduling.RRScheduler;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -27,12 +28,16 @@ public class Main {
             case "4":
                 runFcfsSchedule();
                 break;
+            case "5":
+                runRRSchedule();
+                break;
             default:
                 System.out.println("Running all schedules");
                 runSpnSchedule();
                 runFeedbackSchedule();
                 runHrrnSchedule();
                 runFcfsSchedule();
+                runRRSchedule();
         }
     }
 
@@ -81,6 +86,18 @@ public class Main {
 
         FCFSScheduler fcfsScheduler = new FCFSScheduler(preparedSchedulingItems.taskArrivalQueue);
         Thread scheduler = new Thread(fcfsScheduler);
+
+        runAlgorithm(scheduler, preparedSchedulingItems.producerThread);
+
+        summarize(preparedSchedulingItems.tasks);
+        System.out.println("-----------------END-----------------");
+    }
+    private static void runRRSchedule (){
+        System.out.println("-----------------RR Scheduling-----------------");
+        PreparedSchedulingItems preparedSchedulingItems = prepareSchedule();
+
+        RRScheduler rrScheduler = new RRScheduler(preparedSchedulingItems.taskArrivalQueue);
+        Thread scheduler = new Thread(rrScheduler);
 
         runAlgorithm(scheduler, preparedSchedulingItems.producerThread);
 
