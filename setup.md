@@ -30,3 +30,6 @@ SRT -
 
 HRRN -
 `java Main 4`
+
+RR Scheduling -
+'java Main 5'
