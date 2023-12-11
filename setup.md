@@ -25,10 +25,10 @@ SPN Scheduling -
 Feedback Scheduling -
 `java Main 2`
 
-SRT -
+HRRN -
 `java Main 3`
 
-HRRN -
+FCFS -
 `java Main 4`
 
 RR Scheduling -
